@@ -13,7 +13,9 @@ export const isOrthographicCamera = (def: Camera): def is THREE.OrthographicCame
 // To get around it, we can conditionally useEffect on the server (no-op) and
 // useLayoutEffect on the client.
 const isSSR =
-  typeof window === 'undefined' || !window.navigator || /ServerSideRendering|^Deno\//.test(window.navigator.userAgent)
+  typeof window === 'undefined' ||
+  !globalThis.navigator ||
+  /ServerSideRendering|^Deno\//.test(globalThis.navigator.userAgent)
 export const useIsomorphicLayoutEffect = isSSR ? React.useEffect : React.useLayoutEffect
 
 export function useMutableCallback<T>(fn: T) {
@@ -63,7 +65,9 @@ export type ObjectMap = {
 }
 
 export function calculateDpr(dpr: Dpr) {
-  return Array.isArray(dpr) ? Math.min(Math.max(dpr[0], window.devicePixelRatio), dpr[1]) : dpr
+  if (!Array.isArray(dpr)) return dpr
+  if (!globalThis.devicePixelRatio) return Math.min(dpr[0], dpr[1])
+  return Math.min(Math.max(dpr[0], globalThis.devicePixelRatio), dpr[1])
 }
 
 /**

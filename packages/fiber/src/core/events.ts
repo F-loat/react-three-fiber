@@ -100,7 +100,7 @@ function makeId(event: Intersection) {
 // https://github.com/facebook/react/tree/main/packages/react-reconciler#getcurrenteventpriority
 // Gives React a clue as to how import the current interaction is
 export function getEventPriority() {
-  let name = window?.event?.type
+  let name = globalThis?.event?.type
   switch (name) {
     case 'click':
     case 'contextmenu':
